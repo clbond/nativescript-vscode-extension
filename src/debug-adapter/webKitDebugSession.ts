@@ -1,7 +1,7 @@
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-import {OutputEvent, DebugSession, ErrorDestination} from 'vscode-debugadapter';
+import {OutputEvent, DebugSession, ErrorDestination, TerminatedEvent} from 'vscode-debugadapter';
 import {DebugProtocol} from 'vscode-debugprotocol';
 
 import {WebKitDebugAdapter} from './webKitDebugAdapter';
@@ -41,6 +41,10 @@ export class WebKitDebugSession extends DebugSession {
         if (event.event !== 'output') {
             // Don't create an infinite loop...
             Logger.log(`To client: ${JSON.stringify(event) }`);
+        }
+        else if (event instanceof TerminatedEvent)
+        {
+            this.shutdown();
         }
 
         super.sendEvent(event);

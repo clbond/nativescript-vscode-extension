@@ -143,7 +143,11 @@ export class WebKitDebugAdapter implements IDebugAdapter {
             let iosConnection: IosConnection = new IosConnection();
             this.setConnection(iosConnection, args);
             return iosConnection.attach(socketFilePath);
-        });
+        })
+        .then(result => {
+                this._clientAttached = true;
+                return result;
+            });;
     }
 
     private _attachAndroid(args: IAttachRequestArgs | ILaunchRequestArgs): Promise<void> {
@@ -168,6 +172,9 @@ export class WebKitDebugAdapter implements IDebugAdapter {
             }).then(() => {
                 this.onTnsOutputMessage("Attaching to debug application");
                 return androidConnection.attach(port, 'localhost');
+            }).then(result => {
+                this._clientAttached = true;
+                return result;
             });
         });
     }
